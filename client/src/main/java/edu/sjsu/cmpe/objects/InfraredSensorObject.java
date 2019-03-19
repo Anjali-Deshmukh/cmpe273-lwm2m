@@ -9,7 +9,7 @@ import com.mongodb.util.JSON;
 
 import edu.sjsu.cmpe.ParkingSpaceClient;
 
-public class InraredSensorObject {
+public class InfraredSensorObject {
 	
 private int objectId;
 	
@@ -17,7 +17,7 @@ private int objectId;
 	private double Intensity;
 	private int ObservationId;
 	
-	public InraredSensorObject(){
+	public InfraredSensorObject(){
 		this.objectId=14;
 		this.Intensity=0.0;
 		this.ObservationId=0;

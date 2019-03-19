@@ -20,7 +20,7 @@ public class RegisterClient {
 		this.registrationId = registrationId;
 	}
 
-	public String registerInDB(String epnendPointName, String lifeTime) {		
+	public String registerAtDatabase(String epnendPointName, String lifeTime) {		
 		
 		int size = 1020;
 

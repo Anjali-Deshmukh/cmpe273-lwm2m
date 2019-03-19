@@ -16,16 +16,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
-import com.mongodb.util.JSON;
 
 import edu.sjsu.cmpe273.functions.BootStrapClient;
 import edu.sjsu.cmpe273.functions.DeleteClientRegistration;
@@ -41,20 +37,16 @@ public class Server {
 	public static DBCollection registrationInfo;
 	public static DBCollection server_lwm2mResourceInfo;
 
-	public static void connectDb1() throws UnknownHostException {
+	public static void connectDatabase() throws UnknownHostException {
 
-//			String textUri = "mongodb://cmpe273:cmpe273@ds047672.mongolab.com:47672/cmpe273";
-			String textUri = "mongodb://127.0.0.1/test";
-
-			MongoClientURI uri = new MongoClientURI(textUri);
-			MongoClient client = new MongoClient(uri);
-			DB db = client.getDB(uri.getDatabase());
-			bootStrapInfo = db.getCollection("bootStrapInfo");
-			registrationInfo = db.getCollection("registrationInfo");
-			server_lwm2mResourceInfo = db.getCollection("server_lwm2mResourceInfo");
-
-		}
-	
+		String textUri = "mongodb://127.0.0.1/test";
+		MongoClientURI uri = new MongoClientURI(textUri);
+		MongoClient client = new MongoClient(uri);
+		DB db = client.getDB(uri.getDatabase());
+		bootStrapInfo = db.getCollection("bootStrapInfo");
+		registrationInfo = db.getCollection("registrationInfo");
+		server_lwm2mResourceInfo = db.getCollection("server_lwm2mResourceInfo");
+	}
 
 	static Map<String, List<String>> map = new HashMap<String, List<String>>();
 
@@ -69,20 +61,16 @@ public class Server {
 
 	@POST
 	@Path("/bs")
-	// @Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String bootStrap(@QueryParam("ep") String endPointName) throws JSONException, UnknownHostException {
 
-		System.out.println("---------------------------------------------");
-		connectDb1();
+		System.out.println("Connecting to DB");
+		connectDatabase();
 
-		System.out.println("BootStraping Client : EndPointName = " + endPointName);
+		System.out.println("Start Bootstrapping the client for EndPointName = " + endPointName);
 		BootStrapClient bs = new BootStrapClient();
 
-		String temp1 = new String();
-		temp1 = bs.bootStrapInDB(endPointName).replace("\\", "");
-
-		return temp1;
+		return bs.bootStrapInDB(endPointName).replace("\\", "");
 	}
 
 	@POST
@@ -91,39 +79,16 @@ public class Server {
 	public Response register(String myParameters, @QueryParam("ep") String endPointName,
 			@QueryParam("lt") String lifeTime) throws JSONException, UnknownHostException {
 
-		connectDb1();
+		connectDatabase();
 
-		System.out.println("Registering Client : EndPointName = " + endPointName + " LifeTime = " + lifeTime);
+		System.out.println("Registering Client with EndPointName = " + endPointName + " and LifeTime = " + lifeTime);
 
-		System.out.println("\nRegistration Payload Received: " + myParameters);
+		System.out.println("Registration data: " + myParameters);
 
 		RegisterClient rd = new RegisterClient();
 
 		String registrationId = new String();
-		registrationId = rd.registerInDB(endPointName, lifeTime);
-
-		return Response.status(201).entity(registrationId).build();
-	}
-
-	@POST
-	@Path("/ns")
-	@Consumes(MediaType.TEXT_PLAIN)
-	public Response registerNS(String myParameters) throws JSONException, UnknownHostException {
-
-		connectDb1();
-	//	System.out.println("\nSecret" + myParameters);
-
-		String[] str1 = myParameters.split("_");
-
-		for (int i = 0; i < str1.length; i++) {
-
-			DBObject dbo = (DBObject) JSON.parse(str1[i]);
-			if (i == 0) {
-				server_lwm2mResourceInfo.remove(new BasicDBObject());
-			}
-			server_lwm2mResourceInfo.insert(dbo);
-		}
-		String registrationId = "hello";
+		registrationId = rd.registerAtDatabase(endPointName, lifeTime);
 
 		return Response.status(201).entity(registrationId).build();
 	}
@@ -134,7 +99,7 @@ public class Server {
 	public Response updateRegistration(@QueryParam("registrationId") String registrationId,
 			@QueryParam("lt") String lifeTime) throws JSONException, UnknownHostException {
 
-		connectDb1();
+		connectDatabase();
 
 		UpdateClientRegistration ud = new UpdateClientRegistration();
 
@@ -153,7 +118,7 @@ public class Server {
 	public Response deleteRegistration(@QueryParam("registrationId") String registrationId)
 			throws JSONException, UnknownHostException {
 
-		connectDb1();
+		connectDatabase();
 
 		DeleteClientRegistration dd = new DeleteClientRegistration();
 
@@ -164,14 +129,5 @@ public class Server {
 		return Response.status(201).entity(registrationId).build();
 
 	}
-	@GET
-	@Path("/notify")
-//	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.TEXT_PLAIN)
-	public String notify(@QueryParam("tokenNo") String tokenNo, @QueryParam("value") String value) throws JSONException, UnknownHostException {
 
-		System.out.println("Notification Received: tokenNo: " + tokenNo + " value: "+value);
-
-		return "OK";
-	}
 }
