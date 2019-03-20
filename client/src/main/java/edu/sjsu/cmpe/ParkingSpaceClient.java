@@ -10,7 +10,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.omg.CORBA.INITIALIZE;
 
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
@@ -43,19 +42,15 @@ public class ParkingSpaceClient {
 	public DBCollection deviceInfo;
 	public DBCollection locationInfo;
 	public DBCollection sensorInfo;
-	public DBCollection observationInfo;
 	public DBCollection objectDefinitionInfo;
 	public DBCollection lwm2mResourceInfo;
 	public DBCollection resourceDefinitionInfo;
 	public DBCollection accessControlInfo;
-	public DBCollection UGSPersonInfo;
 	public DBCollection InfraRedInfo;
 	public DBCollection VisualInfo;
 	public DBCollection PressureInfo; 
 	public DBCollection UGSVehicleInfo;
-	public DBCollection WeaponInfo; 
 	
-
 	public void initialize() throws UnknownHostException {
 
 		ObjectDefinition def1 = new ObjectDefinition(0, "Security");
@@ -93,7 +88,7 @@ public class ParkingSpaceClient {
 		myResources.pushToDB(this);
 	}
 
-	public void connectDb1() throws UnknownHostException {
+	public void connectDatabase() throws UnknownHostException {
 	
 			String textUri = "mongodb://127.0.0.1/test";
 			MongoClientURI uri = new MongoClientURI(textUri);
@@ -106,17 +101,14 @@ public class ParkingSpaceClient {
 			deviceInfo = db.getCollection("deviceInfo");
 			sensorInfo = db.getCollection("sensorInfo");
 			locationInfo = db.getCollection("locationInfo");
-			observationInfo = db.getCollection("observationInfo");
 			objectDefinitionInfo = db.getCollection("objectDefinitionInfo");
 			lwm2mResourceInfo = db.getCollection("lwm2mResourceInfo");
 			resourceDefinitionInfo = db.getCollection("resourceDefinitionInfo");
 			accessControlInfo = db.getCollection("accessControlInfo");
-			UGSPersonInfo = db.getCollection("UGSPersonInfo");
 			InfraRedInfo = db.getCollection("InfraRedInfo");
 			VisualInfo = db.getCollection("VisualInfo");
 			PressureInfo =db.getCollection("PressureInfo");
 			UGSVehicleInfo =db.getCollection("UGSVehicleInfo");
-			WeaponInfo =db.getCollection("WeaponInfo");
 		}
 	
 
@@ -151,7 +143,7 @@ public class ParkingSpaceClient {
 
 		ParkingSpaceClient c1 = new ParkingSpaceClient();
 
-		c1.connectDb1();
+		c1.connectDatabase();
 
 		c1.pushObjectToDatabase();
 		SecurityObject sec1 = new SecurityObject();
@@ -173,20 +165,32 @@ public class ParkingSpaceClient {
 		} catch (InterruptedException ex) {
 			Thread.currentThread().interrupt();
 		}
-		// c1.updateRegistration(sec1, serv1); // Update Registration
-		try {
-			Thread.sleep(2000); // Again Sleep for 10 seconds
-		} catch (InterruptedException ex) {
-			Thread.currentThread().interrupt();
-		}
-		// c1.deleteRegistration(sec1, serv1); // Update Registration
-
-		System.out.println("Waiting...");
+		
+		System.out.println("Waiting for Update registration...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		
+		 c1.updateRegistration(sec1, serv1); // Update Registration
+		try {
+			Thread.sleep(2000); // Again Sleep for 10 seconds
+		} catch (InterruptedException ex) {
+			Thread.currentThread().interrupt();
+		}
+		
+		System.out.println("Waiting for registration deletion...");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		c1.deleteRegistration(sec1, serv1); // Update Registration
+
+
 		System.out.println("Ended.");
 
 	}
