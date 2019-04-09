@@ -4,6 +4,7 @@
 	<groupId>edu.sjsu.cmpe273</groupId>
 	<artifactId>client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -77,7 +78,31 @@
 			<version>1.17</version>
 		</dependency>
 	</dependencies>
+	
 	<build>
+		<!--<sourceDirectory>src</sourceDirectory>-->
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<warSourceDirectory>WebContent</warSourceDirectory>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+<!-- 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -94,8 +119,8 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>package</phase> <!-- bind to the packaging phase -->
+						<id>make-assembly</id> this is used for inheritance merges
+						<phase>package</phase> bind to the packaging phase
 						<goals>
 							<goal>single</goal>
 						</goals>
@@ -103,6 +128,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-	</build>
+	</build> -->
 
 </project>

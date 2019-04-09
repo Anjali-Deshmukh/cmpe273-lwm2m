@@ -129,5 +129,16 @@ public class Server {
 		return Response.status(201).entity(registrationId).build();
 
 	}
+	
+	@GET
+	@Path("/notify")
+//	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String notify(@QueryParam("tokenNo") String tokenNo, @QueryParam("value") String value) throws JSONException, UnknownHostException {
+
+		System.out.println("Notification Received: tokenNo: " + tokenNo + " value: "+value);
+
+		return "OK";
+	}
 
 }

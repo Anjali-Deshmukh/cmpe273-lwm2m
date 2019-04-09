@@ -42,6 +42,7 @@ public class ParkingSpaceClient {
 	public DBCollection deviceInfo;
 	public DBCollection locationInfo;
 	public DBCollection sensorInfo;
+	public DBCollection observationInfo;
 	public DBCollection objectDefinitionInfo;
 	public DBCollection lwm2mResourceInfo;
 	public DBCollection resourceDefinitionInfo;
@@ -101,6 +102,7 @@ public class ParkingSpaceClient {
 			deviceInfo = db.getCollection("deviceInfo");
 			sensorInfo = db.getCollection("sensorInfo");
 			locationInfo = db.getCollection("locationInfo");
+			observationInfo = db.getCollection("observationInfo");
 			objectDefinitionInfo = db.getCollection("objectDefinitionInfo");
 			lwm2mResourceInfo = db.getCollection("lwm2mResourceInfo");
 			resourceDefinitionInfo = db.getCollection("resourceDefinitionInfo");
