@@ -34,7 +34,6 @@ public class WriteRequest{
 
 		if(path.isObject()){
 			System.out.println("Must be an Object Instance or a Resource");
-//			return -1;
 		}
 		else{
 			payload=path.toString();

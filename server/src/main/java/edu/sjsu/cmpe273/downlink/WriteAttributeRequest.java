@@ -98,7 +98,7 @@ public class WriteAttributeRequest {
 		
 		URI uri1 = new URI(uri_temp);
 
-		System.out.println("\nWrite Attribute Request to Client: " + uri1);
+		System.out.println("Write Attribute Request to Client: " + uri1);
 
 		WebResource webResource = client.resource(uri1);
 

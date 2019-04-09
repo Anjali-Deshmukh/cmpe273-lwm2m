@@ -10,7 +10,7 @@ import com.sun.jersey.api.client.WebResource;
 
 public class DownlinkClient {
 
-	static final String endPointName = "6d26bbc3-a66a-455e-b089-3bb2f8ac915e"; // Pre
+	static final String endPointName = "6d26bbc3=a66a=455e=b089=3bb2f8ac915e"; // Pre
 																				// Installed
 																				// EndPointName
 																				// UUID.randomUUID()
@@ -18,13 +18,20 @@ public class DownlinkClient {
 
 	public static void main(String[] args) throws URISyntaxException, InterruptedException {
 
-		// ---------------Discover---------------------//
+		// ===============Discover=====================//
 		Client client = Client.create();
 		String output = new String();
 
+		System.out.println("\nWaiting for discovery to start...");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		URI uri1 = new URI("http://localhost:8082/client-0.0.1-SNAPSHOT/lwm2m/3/0/discover");
 
-		System.out.println("\nDiscover request : " + uri1);
+		System.out.println("Discover request : " + uri1);
 
 		WebResource webResource = client.resource(uri1);
 
@@ -38,38 +45,51 @@ public class DownlinkClient {
 			throw new RuntimeException("Error while Discovering : HTTP error code : " + response.getStatus());
 		}
 		
-		System.out.println("Continue?");
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Ended.");
-		// ---------------Read---------------------//
 
+		
+		// ===============Read=====================//
+
+
+		
 		ReadRequest r1 = new ReadRequest(10, 1, 2);
 		ReadRequest r2 = new ReadRequest(6, 1);
 
-		r1.sendReadRequest();
-		System.out.println("Continue?");
+		System.out.println("\nWaiting for read request #1 to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		r1.sendReadRequest();
+		System.out.println("Read Request #1 successful");
+
+		System.out.println("\nWaiting for read request #2 to start...");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		r2.sendReadRequest();
 
-		System.out.println("Continue?");
+		System.out.println("Read Request #2 successful");
+		
+		// ================ Write Request ==============//
+		
+		System.out.println("\nWaiting for write request to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// ---------------- Write Request --------------//
+		
 		new WriteRequest(1, 1, 0).sendWriteRequest();
+		System.out.println("Write Request successful");
 
-		// ---------------Execute--------------//
-		System.out.println("Continue?");
+		
+		// ===============Execute==============//
+		System.out.println("\nWaiting for execute request to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
@@ -80,7 +100,7 @@ public class DownlinkClient {
 
 		URI uri11 = new URI("http://localhost:8082/client-0.0.1-SNAPSHOT/lwm2m/10/0/5/execute");
 
-		System.out.println("\nExecute request : " + uri11);
+		System.out.println("Execute request : " + uri11);
 
 		WebResource webResource1 = client1.resource(uri11);
 
@@ -94,62 +114,58 @@ public class DownlinkClient {
 			throw new RuntimeException("Error while Executing : HTTP error code : " + response.getStatus());
 		}
 		
-		// ---------------create---------------------//
+		// ===============create=====================//
 
-		System.out.println("Continue?");
+		System.out.println("\nWaiting for create request to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		Thread.sleep(2000);
 
 		CreateRequest cr1 = new CreateRequest();
 		cr1.sendCreateRequest();
 
-		// ---------------Create Completed---------------------//
-		// ---------------Delete---------------------//
-		System.out.println("Continue?");
+		System.out.println("Create Request successful");
+
+		// ===============Delete=====================//
+		System.out.println("\nWaiting for delete request to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	//	Thread.sleep(2000);
 		
 		DeleteRequest dr1 = new DeleteRequest();
 		dr1.sendDeleteRequest();
+		System.out.println("Delete Request successful");
 
-		// ---------------Delete completed---------------------//
-
-
-		// ------------------- Write Attribute --------------------//
-		System.out.println("Continue?");
+		// =================== Write Attribute ====================//
+		System.out.println("\nWaiting for Write Attribute request to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	//	Thread.sleep(5000);
-
 
 		WriteAttributeRequest ob1 = new WriteAttributeRequest(10, 0, 0, 5); // resource:/10/0/0
 																			// pmin=5
 																			// seconds
 		ob1.sendWriteAttributeRequest();
 
-		// ------------------- Observation Request ------------------//
-		System.out.println("Continue?");
+		System.out.println("Write Attribute Request successful");
+
+		// =================== Observation Request ==================//
+		System.out.println("\nWaiting for Observation request to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	//	Thread.sleep(2000);
 
 		URI uri_observe = new URI("http://localhost:8082/client-0.0.1-SNAPSHOT/lwm2m/10/0/0/observe?tokenNo=777");
 
-		System.out.println("\nObservation Request at uri : " + uri_observe);
+		System.out.println("Observation Request at uri : " + uri_observe);
 
 		Client client_observe = Client.create();
 		WebResource webresource_observe = client_observe.resource(uri_observe);
@@ -165,19 +181,21 @@ public class DownlinkClient {
 			throw new RuntimeException("Error while Observing : HTTP error code : " + response.getStatus());
 		}
 
-		// ------------------- Cancel Observation ------------------//
+		System.out.println("Observation Request successful");
 
-		System.out.println("Continue?");
+		
+		// =================== Cancel Observation ==================//
+
+		System.out.println("\nWaiting for Cancel Observation request to start...");
 		try {
 			System.in.read();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	//	Thread.sleep(10000);
 
 		URI uri2 = new URI("http://localhost:8082/client-0.0.1-SNAPSHOT/lwm2m/10/0/0/cancel");
 
-		System.out.println("\nCancel request started at uri : " + uri2);
+		System.out.println("Cancel request started at uri : " + uri2);
 
 		WebResource webResource2 = client.resource(uri2);
 
@@ -191,6 +209,9 @@ public class DownlinkClient {
 			throw new RuntimeException("Error while Discovering : HTTP error code : " + response.getStatus());
 		}
 
+		System.out.println("Cancel Observation Request successful");
+
+		
 	}
 
 }

@@ -38,7 +38,6 @@ public class ResourceDefinition {
 		Gson gson = new Gson();
 		String myLWM2MResource = gson.toJson(this);
 
-		// System.out.println("\n"+myJson);
 		DBObject dbo = (DBObject) JSON.parse(myLWM2MResource);
 
 		a1.resourceDefinitionInfo.remove(new BasicDBObject());

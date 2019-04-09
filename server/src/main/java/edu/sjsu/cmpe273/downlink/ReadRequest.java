@@ -39,7 +39,6 @@ public class ReadRequest {
 
 		if(path.isObject()){
 			System.out.println("Must be an Object Instance or a Resource");
-//			return -1;
 		}
 		else{
 			payload=path.toString();
@@ -54,7 +53,7 @@ public class ReadRequest {
 		
 		URI uri1 = new URI(uri_temp);
 
-		System.out.println("\nRead to Client: " + uri1);
+		System.out.println("Read to Client: " + uri1);
 
 		WebResource webResource = client.resource(uri1);
 

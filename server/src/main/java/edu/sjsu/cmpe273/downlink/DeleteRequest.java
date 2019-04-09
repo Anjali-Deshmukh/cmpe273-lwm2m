@@ -41,7 +41,7 @@ public class DeleteRequest {
 		
 		URI uri1 = new URI(uri_temp);
 
-		System.out.println("\nDelete Request to Client: " + uri1);
+		System.out.println("Delete Request to Client: " + uri1);
 
 		WebResource webResource = client.resource(uri1);
 		

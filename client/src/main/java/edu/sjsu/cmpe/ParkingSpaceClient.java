@@ -50,7 +50,7 @@ public class ParkingSpaceClient {
 	public DBCollection InfraRedInfo;
 	public DBCollection VisualInfo;
 	public DBCollection PressureInfo; 
-	public DBCollection UGSVehicleInfo;
+	public DBCollection carInfo;
 	
 	public void initialize() throws UnknownHostException {
 
@@ -110,7 +110,7 @@ public class ParkingSpaceClient {
 			InfraRedInfo = db.getCollection("InfraRedInfo");
 			VisualInfo = db.getCollection("VisualInfo");
 			PressureInfo =db.getCollection("PressureInfo");
-			UGSVehicleInfo =db.getCollection("UGSVehicleInfo");
+			carInfo =db.getCollection("CarInfo");
 		}
 	
 

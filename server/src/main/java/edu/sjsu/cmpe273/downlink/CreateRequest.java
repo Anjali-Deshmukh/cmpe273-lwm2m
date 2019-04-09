@@ -65,7 +65,7 @@ public class CreateRequest {
 		
 		URI uri1 = new URI(uri_temp);
 
-		System.out.println("\nCreate Request to Client: " + uri1);
+		System.out.println("Create Request to Client: " + uri1);
 
 		WebResource webResource = client.resource(uri1);
 

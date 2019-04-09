@@ -61,7 +61,6 @@ private int objectId;
 		Gson gson = new Gson();
 		String myServer = gson.toJson(this);
 
-		//System.out.println("\n"+myJson);
 		DBObject dbo = (DBObject) JSON.parse(myServer);
 			a1.InfraRedInfo.remove(new BasicDBObject());
 		a1.InfraRedInfo.insert(dbo);

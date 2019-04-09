@@ -37,7 +37,6 @@ public class NotifyToServer implements Runnable {
 
 	}
 
-//	@Override
 	public void run() {
 
 		System.out.println("Notify Initiated");
@@ -93,22 +92,10 @@ public class NotifyToServer implements Runnable {
 
 					case 11:
 								
-						DBObject fetch2 = a1.UGSVehicleInfo.findOne(query1, fields1);
+						DBObject fetch2 = a1.carInfo.findOne(query1, fields1);
 						 Value = fetch2.toString();
 						 break;
 	
-//					case 12:
-//						
-//						DBObject fetch3 = a1.WeaponInfo.findOne(query1, fields1);
-//						 Value = fetch3.toString();
-//						 break;
-//	
-//					case 13:
-//									
-//						DBObject fetch4 = a1.UGSPersonInfo.findOne(query1, fields1);
-//						 Value =fetch4.toString();
-//						 break;
-						 
 					case 14:
 							
 						DBObject fetch5 = a1.InfraRedInfo.findOne(query1, fields1);
@@ -142,7 +129,7 @@ public class NotifyToServer implements Runnable {
 					}
 					System.out.println("Notifying the value: " + Value);
 
-					// ---------------------------Notify Started--------------------------//
+					// ===========================Notify Started==========================//
 						
 					
 					String status = "{ \""+tokenNo+"\" : "+Value+"}";
@@ -156,22 +143,11 @@ public class NotifyToServer implements Runnable {
 					HttpGet get = new HttpGet(new_uri);
 
 					client.execute(get);
-//					PostMethod post = new PostMethod(new_uri);
-//					@SuppressWarnings("deprecation")
-//				StringRequestEntity entity = new StringRequestEntity(value);
-//					//StringEntity entity = new StringEntity(string)
-//					post.setRequestEntity(entity);
-//					HttpClient httpclient = new HttpClient();
-//				 	 
-//		        	 try {
-//						httpclient.executeMethod(post);
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-					// ---------------------------Notify Ended--------------------------//
+
+					// ===========================Notify Ended==========================//
 
 
-					// ----------check for the cancel flag---------//
+					// ==========check for the cancel flag=========//
 		        	 BasicDBObject fieldsForCancelFlag = new BasicDBObject().append("_id", false);
 		 			fieldsForCancelFlag.put("cancel", true);
 		 			
@@ -182,7 +158,6 @@ public class NotifyToServer implements Runnable {
 					}
 
 					Thread.sleep(pmin * 1000);
-			//			break;
 
 				} catch (InterruptedException e) {
 					System.out.println("going into exception");

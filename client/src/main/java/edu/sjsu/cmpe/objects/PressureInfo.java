@@ -71,7 +71,6 @@ public class PressureInfo {
 		Gson gson = new Gson();
 		String myServer = gson.toJson(this);
 
-		//System.out.println("\n"+myJson);
 		DBObject dbo = (DBObject) JSON.parse(myServer);
 			a1.PressureInfo.remove(new BasicDBObject());
 		a1.PressureInfo.insert(dbo);

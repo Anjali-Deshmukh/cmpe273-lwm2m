@@ -52,7 +52,6 @@ public class AccessControlObject {
 		Gson gson = new Gson();
 		String myServer = gson.toJson(this);
 
-		//System.out.println("\n"+myJson);
 		DBObject dbo = (DBObject) JSON.parse(myServer);
 		a1.accessControlInfo.insert(dbo);
 	}

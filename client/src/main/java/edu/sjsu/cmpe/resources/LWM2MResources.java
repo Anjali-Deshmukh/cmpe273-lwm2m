@@ -77,7 +77,6 @@ public class LWM2MResources {
 		Gson gson = new Gson();
 		String myLWM2MResource = gson.toJson(this);
 
-		// System.out.println("\n"+myJson);
 		DBObject dbo = (DBObject) JSON.parse(myLWM2MResource);
 		if (objectId == 0) {
 			a1.lwm2mResourceInfo.remove(new BasicDBObject());

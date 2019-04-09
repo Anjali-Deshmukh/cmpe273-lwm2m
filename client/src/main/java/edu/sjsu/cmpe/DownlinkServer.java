@@ -47,19 +47,19 @@ public class DownlinkServer {
 		return temp1;
 	}
 
-	// -----------------Discover---------------//
+	/*===============Discover=============*/
 	@GET
 	@Path("{objectId}/{objectInstanceId}/discover")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String discoverRequest(@PathParam("objectId") int objectId,
 			@PathParam("objectInstanceId") int objectInstanceId) throws UnknownHostException, JSONException {
 
-		System.out.println("\n----------------Discover-------------");
+		System.out.println("\n============Discover==========");
 
-		System.out.println("Discover Reuqest Received for: " + objectId + "/" + objectInstanceId);
+		System.out.println("Discover Request Received for: " + objectId + "/" + objectInstanceId);
 
-		ParkingSpaceClient a1 = new ParkingSpaceClient();
-		a1.connectDatabase();
+		ParkingSpaceClient psClient = new ParkingSpaceClient();
+		psClient.connectDatabase();
 
 		BasicDBObject query = new BasicDBObject();
 		query.put("objectId", objectId);
@@ -67,7 +67,7 @@ public class DownlinkServer {
 		fields.put("resourceCount", true);
 		fields.put("pmin", true);
 		fields.put("pmax", true);
-		DBCursor curs = a1.lwm2mResourceInfo.find(query, fields);
+		DBCursor curs = psClient.lwm2mResourceInfo.find(query, fields);
 		int resourceCount = 0, pmin = 0, pmax = 0;
 		while (curs.hasNext()) {
 			DBObject dbo = curs.next();
@@ -89,7 +89,7 @@ public class DownlinkServer {
 		return jReply;
 	}
 
-	// -----------------Read---------------//
+	// ============-Read========== //
 
 	@GET
 	@Path("{objectId}/{objectInstanceId}")
@@ -97,16 +97,16 @@ public class DownlinkServer {
 	public String readObject(@PathParam("objectId") int objectId, @PathParam("objectInstanceId") int objectInstanceId)
 			throws UnknownHostException, JSONException {
 
-		System.out.println("\n----------------Read-------------");
+		System.out.println("\n============Read==========");
 
-		System.out.println("Read Reuqest Received for: " + objectId + "/" + objectInstanceId);
+		System.out.println("Read Request Received for: " + objectId + "/" + objectInstanceId);
 
-		ParkingSpaceClient a1 = new ParkingSpaceClient();
-		a1.connectDatabase();
+		ParkingSpaceClient psClient = new ParkingSpaceClient();
+		psClient.connectDatabase();
 
 		BasicDBObject query = new BasicDBObject();
 		BasicDBObject fields = new BasicDBObject().append("_id", false);
-		DBCursor curs = a1.getCollection(objectId).find(query, fields);
+		DBCursor curs = psClient.getCollection(objectId).find(query, fields);
 		String jReply = null;
 		while (curs.hasNext()) {
 			DBObject dbo = curs.next();
@@ -121,9 +121,9 @@ public class DownlinkServer {
 	public String readResource(@PathParam("objectId") int objectId, @PathParam("objectInstanceId") int objectInstanceId,
 			@PathParam("resourceId") int resourceId) throws UnknownHostException, JSONException {
 
-		System.out.println("\n----------------Read-------------");
+		System.out.println("\n============Read==========");
 
-		System.out.println("Read Reuqest Received for: " + objectId + "/" + objectInstanceId + "/" + resourceId);
+		System.out.println("Read Request Received for: " + objectId + "/" + objectInstanceId + "/" + resourceId);
 
 		ParkingSpaceClient a1 = new ParkingSpaceClient();
 		a1.connectDatabase();
@@ -156,14 +156,14 @@ public class DownlinkServer {
 		}
 		return jReply;
 	}
-	// -----------------Write---------------//
+	// ============-Write========== //
 
 	@PUT
 	@Path("/{objectId}/{objectInstanceId}/{resourceId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateRegistration(String jString) throws JSONException, UnknownHostException {
 
-		System.out.println("\n----------------Write-------------");
+		System.out.println("\n============Write==========");
 
 		JSONObject j1 = new JSONObject(jString);
 		int serv_id = Integer.parseInt(j1.get("value").toString());
@@ -180,7 +180,7 @@ public class DownlinkServer {
 		return Response.status(201).entity(status).build();
 	}
 
-	// -----------------WriteAttribute---------------//
+	// ============WriteAttribute========== //
 	@PUT
 	@Path("/{objectId}/{objectInstanceId}/{resourceId}/writeattribute/")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -190,7 +190,7 @@ public class DownlinkServer {
 			@QueryParam("lt") int lt, @QueryParam("st") int st, @QueryParam("cancel") boolean cancel)
 					throws JSONException, UnknownHostException {
 
-		System.out.println("\n----------------Write Attribute-------------");
+		System.out.println("\n============Write Attribute==========");
 		WriteAttribute ob1 = new WriteAttribute();
 
 		System.out.println("Write Attribute Request Received for: " + objectId + "/" + objectInstanceId + "/" + resourceId);
@@ -231,7 +231,7 @@ public class DownlinkServer {
 		return Response.status(201).entity(response).build();
 	}
 
-	// -----------------Observe---------------//
+	// ============Observe========== //
 	@GET
 	@Path("{objectId}/{objectInstanceId}/{resourceId}/observe")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -239,11 +239,11 @@ public class DownlinkServer {
 			@PathParam("objectInstanceId") int objectInstanceId, @PathParam("resourceId") int resourceId,
 			@QueryParam("tokenNo") int tokenNo) throws UnknownHostException, JSONException {
 
-		System.out.println("\n----------------Observation-------------");
+		System.out.println("\n============Observation==========");
 
 		System.out.println("Observation Reuqest Received for: " + objectId + "/" + objectInstanceId + "/" + resourceId);
 
-		// ------------------New Thread Started -----------------------//
+		// ============ New Thread Started =============== //
 		Runnable r1 = new NotifyToServer(objectId, objectInstanceId, resourceId, tokenNo);
 		new Thread(r1).start();
 
@@ -251,8 +251,7 @@ public class DownlinkServer {
 		return Response.status(201).entity(status).build();
 	}
 
-	// --------------------------------- Cancel Observation
-	// -------------------//
+	// =============== Cancel Observation ============ //
 	@POST
 	@Path("{objectId}/{objectInstanceId}/{resourceId}/cancel")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -260,7 +259,7 @@ public class DownlinkServer {
 			@PathParam("objectInstanceId") int objectInstanceId, @PathParam("resourceId") int resourceId)
 					throws JSONException, UnknownHostException, JSONException {
 
-		System.out.println("\n----------------Cancel-------------");
+		System.out.println("\n============Cancel==========");
 
 		System.out.println("cancel Reuqest Received for: " + objectId + "/" + objectInstanceId);
 
@@ -276,7 +275,7 @@ public class DownlinkServer {
 		return Response.status(201).entity(status).build();
 	}
 
-	// -----------------Execute---------------//
+	// ============-Execute========== //
 	@POST
 	@Path("/{objectId}/{objectInstanceId}/{resourceId}/execute")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -284,7 +283,7 @@ public class DownlinkServer {
 			@PathParam("objectInstanceId") int objectInstanceId, @PathParam("resourceId") int resourceId)
 					throws JSONException, UnknownHostException {
 
-		System.out.println("\n----------------Execute-------------");
+		System.out.println("\n============Execute==========");
 
 		String response = "Execute Request On /" + objectId + "/" + objectInstanceId + "/" + resourceId;
 		System.out.println("Execute: " + response);
@@ -297,7 +296,7 @@ public class DownlinkServer {
 		return Response.status(201).entity(status).build();
 	}
 
-	// ----------------------------------create-------------------//
+	// ====================create============ //
 	@POST
 	@Path("{objectId}/create")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -305,7 +304,7 @@ public class DownlinkServer {
 			@QueryParam("objectInstanceId") int objectInstanceId, @QueryParam("ACL") int ACL,
 			@QueryParam("owner") int owner) throws JSONException, UnknownHostException, JSONException {
 
-		System.out.println("\n----------------Create-------------");
+		System.out.println("\n============Create==========");
 
 		System.out.println("Create Reuqest Received for: " + objectId);
 
@@ -335,16 +334,13 @@ public class DownlinkServer {
 				new BasicDBObject().append("objectInstanceCount", c));
 		a2.lwm2mResourceInfo.update(query3, document3);
 
-	//	System.out.println("max instance id for object " + objectId + " was " + b);
-	//	System.out.println("new instance created at :" + c);
-
 		JSONObject status = new JSONObject("{ \"status\" : \"created\" }");
 		return Response.status(201).entity(status).build();
 	}
 
-	// ----------------create ended----------------------//
+	// ============create ended===============-//
 
-	// -----------------Delete---------------//
+	// ============-Delete==========--//
 
 	@DELETE
 	@Path("/{objectId}/{ACLobjectId}/delete")
@@ -356,7 +352,7 @@ public class DownlinkServer {
 		BasicDBObject document4 = new BasicDBObject().append("_id", false);
 		document4.put("objectInstanceCount", true);
 		
-		System.out.println("\n----------------Delete-------------");
+		System.out.println("\n============Delete==========");
 
 		ParkingSpaceClient a2 = new ParkingSpaceClient();
 		a2.connectDatabase();
