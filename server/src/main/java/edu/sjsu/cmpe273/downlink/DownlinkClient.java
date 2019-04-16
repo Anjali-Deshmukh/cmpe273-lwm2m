@@ -3,6 +3,14 @@ package edu.sjsu.cmpe273.downlink;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -44,13 +52,9 @@ public class DownlinkClient {
 		} else {
 			throw new RuntimeException("Error while Discovering : HTTP error code : " + response.getStatus());
 		}
-		
-
-		
+				
 		// ===============Read=====================//
 
-
-		
 		ReadRequest r1 = new ReadRequest(10, 1, 2);
 		ReadRequest r2 = new ReadRequest(6, 1);
 
@@ -75,6 +79,84 @@ public class DownlinkClient {
 
 		System.out.println("Read Request #2 successful");
 		
+		
+		// ================ Reading timestamp ==============//
+		
+		
+		System.out.println("\nWaiting for read timestamp to start...");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		boolean run = true;
+		while (run) {
+			ReadRequest r3 = new ReadRequest(10, 1, 2);
+
+//		System.out.println("\nNo car parked at parking spot 2");
+
+			// call writeRequest to park a car
+
+			String parkingTimestamp = r3.sendReadRequest();
+
+			Long allowedTime = 10L;
+
+			System.out.println("======================================");
+			if (parkingTimestamp.isEmpty()) {
+				System.out.println("No car parked at parking spot 2");
+			} else {
+				Date parkingTime = new Date(new Long(parkingTimestamp));
+				System.out.println("Car arrived at parking spot 2 at time " + parkingTime);
+
+				Date currentTime = new Date();
+				Long timeElapsed = computeDiff(parkingTime, currentTime).get(TimeUnit.SECONDS);
+				Long timeRemaining = allowedTime - timeElapsed;
+				if (timeRemaining < 0L) {
+					System.out.println("Car timer has expired by: " + timeRemaining * -1 + " hours");
+				} else {
+					System.out.println("Parking Time elapased is " + timeElapsed + ", timeRemaining: " + timeRemaining);
+				}
+			}
+			System.out.println("======================================");
+
+			System.out.println("Waiting 5 seconds to pull new status...");
+			Thread.sleep(5000);
+			System.out.println();
+
+		}
+		
+//		if (parkingTimestamp.isEmpty()) {
+//			System.out.println("\nNo car parked at parking spot 2");
+//		} else {
+//			System.out.println("\nCar arrived at parking spot 2 at time " + parkingTime);
+//			
+//			Date currentTime = new Date();
+//			Long timeElapsed = computeDiff(parkingTime, currentTime).get(TimeUnit.SECONDS);
+//			Long timeRemaining = allowedTime - timeElapsed;
+//			if (timeRemaining < 0L) {
+//				System.out.println("Car timer has expired by: " + timeRemaining * -1 + " hours");
+//			} else {
+//			System.out.println("Parking Time remaining is " + timeElapsed + ", timeRemaining: " + timeRemaining);
+//			}		}
+//		
+//		Thread.sleep(8000);
+//
+//		if (parkingTimestamp.isEmpty()) {
+//			System.out.println("\nNo car parked at parking spot 2");
+//		} else {
+//			System.out.println("\nCar arrived at parking spot 2 at time " + parkingTime);
+//			
+//			Date currentTime = new Date();
+//			Long timeElapsed = computeDiff(parkingTime, currentTime).get(TimeUnit.SECONDS);
+//			Long timeRemaining = allowedTime - timeElapsed;
+//			if (timeRemaining < 0L) {
+//				System.out.println("Car timer has expired by: " + timeRemaining * -1 + " hours");
+//			} else {
+//			System.out.println("Parking Time remaining is " + timeElapsed + ", timeRemaining: " + timeRemaining);
+//			}
+//		}
+		
 		// ================ Write Request ==============//
 		
 		System.out.println("\nWaiting for write request to start...");
@@ -83,6 +165,7 @@ public class DownlinkClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		
 		new WriteRequest(1, 1, 0).sendWriteRequest();
 		System.out.println("Write Request successful");
@@ -212,6 +295,32 @@ public class DownlinkClient {
 		System.out.println("Cancel Observation Request successful");
 
 		
+	}
+	
+	public static Map<TimeUnit,Long> computeDiff(Date date1, Date date2) {
+
+	    long diffInMillies = date2.getTime() - date1.getTime();
+
+	    //create the list
+	    List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
+	    Collections.reverse(units);
+
+	    //create the result map of TimeUnit and difference
+	    Map<TimeUnit,Long> result = new LinkedHashMap<TimeUnit,Long>();
+	    long milliesRest = diffInMillies;
+
+	    for ( TimeUnit unit : units ) {
+
+	        //calculate difference in millisecond 
+	        long diff = unit.convert(milliesRest,TimeUnit.MILLISECONDS);
+	        long diffInMilliesForUnit = unit.toMillis(diff);
+	        milliesRest = milliesRest - diffInMilliesForUnit;
+
+	        //put the result in the map
+	        result.put(unit,diff);
+	    }
+
+	    return result;
 	}
 
 }

@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe;
 
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,9 @@ import edu.sjsu.cmpe.observe.WriteAttribute;
 public class DownlinkServer {
 
 	static Map<String, List<String>> map = new HashMap<String, List<String>>();
-
+ 
+	static SensorObject sensorObject = new SensorObject(true);
+	
 	@GET
 	@Path("/test")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -137,25 +140,84 @@ public class DownlinkServer {
 			resource = new LocationObject().getResourceDescription(resourceId);
 			break;
 		case 10:
-			resource = new SensorObject().getResourceDescription(resourceId);
+			resource = sensorObject.getResourceDescription(resourceId);
 			break;
 		default:
 			resource = null;
 			break;
 		}
+		System.out.println("getResourceDescription: " + resource);
 		String jReply = null;
 		if (resource == null) {
 			return "error";
 		}
-		BasicDBObject query = new BasicDBObject();
-		BasicDBObject fields = new BasicDBObject(resource, true).append("_id", false);
-		DBCursor curs = a1.getCollection(objectId).find(query, fields);
-		while (curs.hasNext()) {
-			DBObject dbo = curs.next();
-			jReply = dbo.toString();
-		}
-		return jReply;
+		
+//		BasicDBObject query = new BasicDBObject();
+//		BasicDBObject fields = new BasicDBObject(resource, true).append("_id", false);
+//		DBCursor curs = a1.getCollection(objectId).find(query, fields);
+//		while (curs.hasNext()) {
+//			DBObject dbo = curs.next();
+//			jReply = dbo.toString();
+//		}
+		return resource;
 	}
+	
+	// ============CarEnteredApi========== //
+
+	@GET
+	@Path("/car/enter")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response carEnteredApi() throws UnknownHostException, JSONException {
+
+		System.out.println("\n============Car Entered into the Parking Spot==========");
+
+		sensorObject.setEntry(new Date());
+		
+		
+//		JSONObject j1 = new JSONObject(jString);
+//		int serv_id = Integer.parseInt(j1.get("value").toString());
+//		BasicDBObject query = new BasicDBObject();
+//		BasicDBObject document = new BasicDBObject().append("$set",
+//				new BasicDBObject().append("ShortServerId", serv_id));
+//		ParkingSpaceClient a1 = new ParkingSpaceClient();
+//		a1.connectDatabase();
+//		a1.serverInfo.update(query, document);
+//
+//		System.out.println("Value Changed to: " + serv_id);
+
+//		JSONObject status = new JSONObject("{ \"status\" : \"changed\" }");
+//		return sensorObject.getResourceDescription(resourceId);
+		return Response.status(200).build();
+	}
+	
+	// ============carExitApi========== //
+
+	@GET
+	@Path("/car/exit")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response carExitApi() throws UnknownHostException, JSONException {
+
+		System.out.println("\n============Car Exits the Parking Spot==========");
+
+		sensorObject.reset();
+		
+		
+//		JSONObject j1 = new JSONObject(jString);
+//		int serv_id = Integer.parseInt(j1.get("value").toString());
+//		BasicDBObject query = new BasicDBObject();
+//		BasicDBObject document = new BasicDBObject().append("$set",
+//				new BasicDBObject().append("ShortServerId", serv_id));
+//		ParkingSpaceClient a1 = new ParkingSpaceClient();
+//		a1.connectDatabase();
+//		a1.serverInfo.update(query, document);
+//
+//		System.out.println("Value Changed to: " + serv_id);
+
+//		JSONObject status = new JSONObject("{ \"status\" : \"changed\" }");
+//		return sensorObject.getResourceDescription(resourceId);
+		return Response.status(200).build();
+	}	
+	
 	// ============-Write========== //
 
 	@PUT

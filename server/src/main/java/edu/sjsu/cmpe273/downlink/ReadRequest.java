@@ -34,7 +34,7 @@ public class ReadRequest {
         return String.format("ReadRequest [%s]", getPath());
     }
 
-	public int sendReadRequest() throws URISyntaxException {
+	public String sendReadRequest() throws URISyntaxException {
 		String payload;
 
 		if(path.isObject()){
@@ -60,13 +60,13 @@ public class ReadRequest {
 		ClientResponse response = webResource.type("application/json").get(ClientResponse.class);
 
 		output = response.getEntity(String.class);
-		System.out.println("Read Response : " + output);
+//		System.out.println("Read Response : " + output);
 
 		if (response.getStatus() != 200) {
 			throw new RuntimeException("Error while Read to Client : HTTP error code : "	+ response.getStatus());
 		}
 		
-		return 0;
+		return output;
 	}
 
 }
