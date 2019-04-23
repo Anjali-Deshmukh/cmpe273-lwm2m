@@ -36,6 +36,9 @@ public class Server {
 	public static DBCollection bootStrapInfo;
 	public static DBCollection registrationInfo;
 	public static DBCollection server_lwm2mResourceInfo;
+	public static Map<String, String> vehicleLog  = new HashMap<String,String>();
+	
+
 
 	public static void connectDatabase() throws UnknownHostException {
 
@@ -46,6 +49,10 @@ public class Server {
 		bootStrapInfo = db.getCollection("bootStrapInfo");
 		registrationInfo = db.getCollection("registrationInfo");
 		server_lwm2mResourceInfo = db.getCollection("server_lwm2mResourceInfo");
+		
+		//yyyy'-'MM'-'dd'T'HH':'mm':'ss
+		vehicleLog.put("TE4378", "2019-04-02 07:33:37");
+		vehicleLog.put("TE4378", "2019-04-02 10:25:16");
 	}
 
 	static Map<String, List<String>> map = new HashMap<String, List<String>>();
@@ -138,5 +145,30 @@ public class Server {
 		System.out.println("Notification Received: tokenNo: " + tokenNo + " value: "+value);
 		return "OK";
 	}
-
+	
+	@GET
+	@Path("/payment")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String payment(@QueryParam("VehicleNo") String vehicleNo, @QueryParam("paymentPlan") String paymentPlan) 
+			throws JSONException, UnknownHostException {
+		connectDatabase();
+		//Calculate bill for vehicle
+		double bill = calculateBill("TE4378", "basic");
+		System.out.println("Bill for vehicle " + vehicleNo + " value: $" + bill);
+		
+		return "OK";
+	}
+	
+	public double calculateBill(String vehicleNo, String paymentPlan) {
+		int count = 0;
+		
+		for (Map.Entry<String, String> entry: vehicleLog.entrySet()) {
+			if(count == 0) {
+				
+			}
+		}
+		
+		return 25.0;
+		
+	}
 }
