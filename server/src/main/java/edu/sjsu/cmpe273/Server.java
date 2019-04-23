@@ -156,7 +156,7 @@ public class Server {
 		double bill = calculateBill("TE4378", "basic");
 		System.out.println("Bill for vehicle " + vehicleNo + " value: $" + bill);
 		
-		return "OK";
+		return String.valueOf(bill);
 	}
 	
 	public double calculateBill(String vehicleNo, String paymentPlan) {
